@@ -32,22 +32,22 @@ type Range interface {
 // New returns nil.
 func New(start, end net.IP) Range {
 	if isV4RangeValid(start, end) {
-		return v4Range{start: start, end: end}
+		return v4Range{Start: start, End: end}
 	}
 	if isV6RangeValid(start, end) {
-		return v6Range{start: start, end: end}
+		return v6Range{Start: start, End: end}
 	}
 	return nil
 }
 
 type v4Range struct {
-	start net.IP
-	end   net.IP
+	Start net.IP
+	End   net.IP
 }
 
 // String returns the string form of the range.
 func (r v4Range) String() string {
-	return fmt.Sprintf("%s-%s", r.start, r.end)
+	return fmt.Sprintf("%s-%s", r.Start, r.End)
 }
 
 // Family returns the range address family.
@@ -57,22 +57,22 @@ func (r v4Range) Family() Family {
 
 // Contains reports whether the range includes IP.
 func (r v4Range) Contains(ip net.IP) bool {
-	return bytes.Compare(ip, r.start) >= 0 && bytes.Compare(ip, r.end) <= 0
+	return bytes.Compare(ip, r.Start) >= 0 && bytes.Compare(ip, r.End) <= 0
 }
 
 // Size reports the number of IP addresses in the range.
 func (r v4Range) Size() *big.Int {
-	return big.NewInt(v4ToInt(r.end) - v4ToInt(r.start) + 1)
+	return big.NewInt(v4ToInt(r.End) - v4ToInt(r.Start) + 1)
 }
 
 type v6Range struct {
-	start net.IP
-	end   net.IP
+	Start net.IP
+	End   net.IP
 }
 
 // String returns the string form of the range.
 func (r v6Range) String() string {
-	return fmt.Sprintf("%s-%s", r.start, r.end)
+	return fmt.Sprintf("%s-%s", r.Start, r.End)
 }
 
 // Family returns the range address family.
@@ -82,14 +82,14 @@ func (r v6Range) Family() Family {
 
 // Contains reports whether the range includes IP.
 func (r v6Range) Contains(ip net.IP) bool {
-	return bytes.Compare(ip, r.start) >= 0 && bytes.Compare(ip, r.end) <= 0
+	return bytes.Compare(ip, r.Start) >= 0 && bytes.Compare(ip, r.End) <= 0
 }
 
 // Size reports the number of IP addresses in the range.
 func (r v6Range) Size() *big.Int {
 	size := big.NewInt(0)
-	size.Add(size, big.NewInt(0).SetBytes(r.end))
-	size.Sub(size, big.NewInt(0).SetBytes(r.start))
+	size.Add(size, big.NewInt(0).SetBytes(r.End))
+	size.Sub(size, big.NewInt(0).SetBytes(r.Start))
 	size.Add(size, big.NewInt(1))
 	return size
 }
